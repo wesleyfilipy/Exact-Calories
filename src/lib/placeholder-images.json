@@ -1,0 +1,46 @@
+{
+  "placeholderImages": [
+    {
+      "id": "app-mockup",
+      "description": "A mockup of the Exact Calories app on a smartphone showing a food scanner.",
+      "imageUrl": "",
+      "imageHint": "app food scanner"
+    },
+    {
+      "id": "about-app",
+      "description": "A person using a smartphone to track their fitness and nutrition.",
+      "imageUrl": "https://images.unsplash.com/photo-1729281008800-539686eaedc0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8Zml0bmVzcyUyMHRyYWNraW5nJTIwYXBwfGVufDB8fHx8MTc2NDc4MjAwM3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "fitness tracking app"
+    },
+    {
+      "id": "how-it-works",
+      "description": "A split screen showing a person exercising and a healthy meal.",
+      "imageUrl": "https://images.unsplash.com/photo-1607962837359-5e7e89f86776?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxoZWFsdGh5JTIwbGlmZXN0eWxlfGVufDB8fHx8MTc2NDc1NzMzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "healthy lifestyle"
+    },
+    {
+      "id": "premium-features",
+      "description": "A dashboard showing detailed analytics and charts of nutritional data.",
+      "imageUrl": "https://images.unsplash.com/photo-1617170007444-368999506742?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxudXRyaXRpb24lMjBkYXRhJTIwYW5hbHl0aWNzfGVufDB8fHx8MTc2NDc4MjAwN3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "nutrition data analytics"
+    },
+    {
+      "id": "supplement-whey",
+      "description": "A container of whey protein.",
+      "imageUrl": "https://images.unsplash.com/photo-1693996045369-781799bbaea0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHx3aGV5JTIwcHJvdGVpbnxlbnwwfHx8fDE3NjQ3ODE1NzB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "whey protein"
+    },
+    {
+      "id": "supplement-creatine",
+      "description": "A bottle of creatine.",
+      "imageUrl": "https://images.unsplash.com/photo-1693996045838-980674653385?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxjcmVhdGluZSUyMHN1cHBsZW1lbnR8ZW58MHx8fHwxNzY0NzgxNTcxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "creatine supplement"
+    },
+    {
+      "id": "supplement-preworkout",
+      "description": "A pre-workout supplement container.",
+      "imageUrl": "https://images.unsplash.com/photo-1704650311981-419f841421cc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxwcmUlMjB3b3Jrb3V0fGVufDB8fHx8MTc2NDc4MTU3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "pre workout"
+    }
+  ]
+}
