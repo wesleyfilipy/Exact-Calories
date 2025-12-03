@@ -56,7 +56,7 @@ export default function TermsOfUsePage() {
             </ul>
 
             <h2>9. Applicable law</h2>
-            <p>These terms will be governed by the laws of the country where the company is registered (e.g., Brazil). Any disputes will be resolved in the competent courts located in the company's location.</p>
+            <p>These terms will be governed by the laws of the country where the company is registered (e.g., Brazil). Any disputes will be resolved in the competent courts located in the company&apos;s location.</p>
 
             <h2>10. Contact</h2>
             <p>For questions about these terms:</p>

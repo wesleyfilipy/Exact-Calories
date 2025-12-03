@@ -1,0 +1,13 @@
+.next
+node_modules
+.vercel
+pnpm-lock.yaml
+yarn.lock
+dist
+build
+.DS_Store
+*.log
+*.local
+.env
+.env.*
+
