@@ -9,11 +9,11 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 
 const navItems = [
-  { name: "Home", href: "#home" },
-  { name: "About", href: "#about" },
-  { name: "Features", href: "#features" },
-  { name: "How it Works", href: "#how-it-works" },
-  { name: "Premium", href: "#premium" },
+  { name: "Home", href: "/" },
+  { name: "About", href: "/#about" },
+  { name: "Features", href: "/#features" },
+  { name: "How it Works", href: "/#how-it-works" },
+  { name: "Premium", href: "/#premium" },
 ];
 
 export default function Header() {
