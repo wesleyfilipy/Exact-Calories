@@ -14,8 +14,11 @@ export default function Footer() {
             <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
               Terms of Use
             </Link>
-            <Link href="/politica-de-privacidade" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
               Privacy Policy
+            </Link>
+            <Link href="/politica-de-privacidade" className="text-muted-foreground hover:text-foreground transition-colors">
+              Política de Privacidade
             </Link>
           </nav>
         </div>
