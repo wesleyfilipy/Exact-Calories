@@ -14,6 +14,7 @@ const navItems = [
   { name: "Features", href: "/#features" },
   { name: "How it Works", href: "/#how-it-works" },
   { name: "Premium", href: "/#premium" },
+  { name: "Privacy Policy", href: "/politica-de-privacidade" },
 ];
 
 export default function Header() {
