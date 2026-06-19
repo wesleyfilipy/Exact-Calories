@@ -13,6 +13,9 @@ declare namespace JSX {
       'settings-control'?: string;
       'small-play-button'?: string;
       'end-video-behavior'?: string;
+      sharing?: string;
+      'download-button'?: string;
+      'plugin-share'?: string;
     }, HTMLElement>;
   }
 }
