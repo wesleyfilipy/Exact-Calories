@@ -1,6 +1,11 @@
+"use client";
+
 import Image from "next/image";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 export default function AboutSection() {
+  const cfg = useSiteConfig();
+
   return (
     <section id="about" className="py-20 md:py-28 luxury-gradient">
       <div className="container grid md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -8,11 +13,12 @@ export default function AboutSection() {
           <div className="relative w-full max-w-[340px] md:max-w-[420px]">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-rose-200/60 to-pink-100/60 blur-xl" />
             <Image
-              src="/foto/Gemini_Generated_Image_3yh3d63yh3d63yh3.png"
+              src={cfg.aboutImage}
               alt="Exact Calories app mockup"
               width={420}
               height={560}
               className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover w-full h-auto"
+              unoptimized={cfg.aboutImage.startsWith("data:")}
             />
           </div>
         </div>
@@ -26,7 +32,7 @@ export default function AboutSection() {
             Companion
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            With a clean, intuitive, and modern interface, Exact Calories allows you to log meals in seconds and instantly see how they fit into your daily goals. The app was built to help you stay consistent, offering clear insights and powerful tools that make healthy living more accessible — even with a busy routine.
+            With a clean, intuitive, and modern interface, Exact Calories allows you to log meals in seconds and instantly see how they fit into your daily goals.
           </p>
           <p className="text-muted-foreground leading-relaxed">
             You&apos;ll always know how many calories you&apos;ve consumed, how many you have left, and how your choices impact your progress. Beauty meets function, every single day.

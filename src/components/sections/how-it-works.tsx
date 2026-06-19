@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 const steps = [
   { number: "01", title: "Scan Your Meal", description: "Use the AI-powered scanner to identify food and get instant nutrition data." },
@@ -7,6 +10,8 @@ const steps = [
 ];
 
 export default function HowItWorksSection() {
+  const cfg = useSiteConfig();
+
   return (
     <section id="how-it-works" className="py-20 md:py-28 luxury-gradient">
       <div className="container grid md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -20,7 +25,7 @@ export default function HowItWorksSection() {
               <span className="pink-gradient-text">Like Never Before</span>
             </h2>
             <p className="mt-4 text-muted-foreground leading-relaxed">
-              The food diary and nutrition log make it effortless to see patterns in your eating habits. Make smarter choices every day with elegant, clear insights.
+              The food diary and nutrition log make it effortless to see patterns in your eating habits. Make smarter choices every day.
             </p>
           </div>
           <div className="flex flex-col gap-6">
@@ -41,11 +46,12 @@ export default function HowItWorksSection() {
           <div className="relative w-full max-w-[340px] md:max-w-[420px]">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-pink-200/50 to-rose-100/50 blur-xl" />
             <Image
-              src="/foto/Gemini_Generated_Image_m2486sm2486sm248.png"
+              src={cfg.howItWorksImage}
               alt="App nutrition tracking screen"
               width={420}
               height={560}
               className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover w-full h-auto"
+              unoptimized={cfg.howItWorksImage.startsWith("data:")}
             />
           </div>
         </div>

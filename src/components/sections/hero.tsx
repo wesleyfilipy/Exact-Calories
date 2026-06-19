@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { Sparkles, Volume2, VolumeX } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 declare global {
   interface Window {
@@ -29,6 +30,7 @@ function trackDownload(store: "ios" | "android") {
 }
 
 export default function HeroSection() {
+  const cfg = useSiteConfig();
   const [muted, setMuted] = useState(true);
   const [wistiaPlayer, setWistiaPlayer] = useState<any>(null);
 
@@ -83,7 +85,7 @@ export default function HeroSection() {
               size="lg"
               onClick={() => {
                 trackDownload("ios");
-                window.open("https://apps.apple.com/us/app/exact-calories/id6753726987", "_blank");
+                window.open(cfg.iosUrl, "_blank");
               }}
               className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg shadow-rose-200 border-0 rounded-full px-6 sm:px-8 h-12 sm:h-14 text-sm sm:text-base font-semibold transition-all duration-300 w-full xs:w-auto"
             >
@@ -95,7 +97,7 @@ export default function HeroSection() {
               variant="outline"
               onClick={() => {
                 trackDownload("android");
-                window.open("https://play.google.com/store/apps/details?id=com.wesleyf.exactcalories", "_blank");
+                window.open(cfg.androidUrl, "_blank");
               }}
               className="border-rose-300 text-rose-600 hover:bg-rose-50 rounded-full px-6 sm:px-8 h-12 sm:h-14 text-sm sm:text-base font-semibold transition-all duration-300 w-full xs:w-auto"
             >

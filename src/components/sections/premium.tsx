@@ -1,8 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { CheckCircle2, Crown } from "lucide-react";
 import { Icons } from "@/components/icons";
+import { useSiteConfig } from "@/hooks/use-site-config";
 
 const perks = [
   "In-depth analytics and personalized insights",
@@ -13,6 +15,8 @@ const perks = [
 ];
 
 export default function PremiumSection() {
+  const cfg = useSiteConfig();
+
   return (
     <section id="premium" className="py-20 md:py-28 bg-white">
       <div className="container grid md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -20,11 +24,12 @@ export default function PremiumSection() {
           <div className="relative w-full max-w-[340px] md:max-w-[420px]">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-rose-200/50 to-pink-100/50 blur-xl" />
             <Image
-              src="/foto/ChatGPT_Image_10_de_jun._de_2026,_11_10_41.png"
+              src={cfg.premiumImage}
               alt="Exact Calories premium features"
               width={420}
               height={560}
               className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover w-full h-auto"
+              unoptimized={cfg.premiumImage.startsWith("data:")}
             />
           </div>
         </div>
@@ -38,7 +43,7 @@ export default function PremiumSection() {
             <span className="pink-gradient-text">Potential</span>
           </h2>
           <p className="text-muted-foreground leading-relaxed">
-            Premium unlocks advanced tools for users who demand maximum performance. Gain access to in-depth analytics, extended progress reports, and elevated calorie tracking.
+            Premium unlocks advanced tools for users who demand maximum performance.
           </p>
           <ul className="space-y-3">
             {perks.map((perk) => (
@@ -50,14 +55,12 @@ export default function PremiumSection() {
           </ul>
           <div className="flex flex-col sm:flex-row gap-4 mt-2">
             <Button
-              asChild
               size="lg"
-              className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg shadow-rose-200 border-0 rounded-full px-8 h-13 font-semibold"
+              onClick={() => window.open(cfg.iosUrl, "_blank")}
+              className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg shadow-rose-200 border-0 rounded-full px-8 font-semibold"
             >
-              <Link href="https://apps.apple.com/us/app/exact-calories/id6753726987" target="_blank">
-                <Icons.apple className="h-5 w-5 mr-2" />
-                Download & Go Premium
-              </Link>
+              <Icons.apple className="h-5 w-5 mr-2" />
+              Download &amp; Go Premium
             </Button>
           </div>
         </div>
