@@ -1,51 +1,63 @@
 import Image from "next/image";
-import { PlaceHolderImages } from "@/lib/placeholder-images";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle2, Crown } from "lucide-react";
+import { Icons } from "@/components/icons";
+
+const perks = [
+  "In-depth analytics and personalized insights",
+  "Extended progress reports & trend analysis",
+  "Custom alerts and smart reminders",
+  "Advanced calorie and macro tracking",
+  "Priority support & early access to features",
+];
 
 export default function PremiumSection() {
-  const premiumImage = PlaceHolderImages.find((img) => img.id === "premium-features");
-
   return (
-    <section id="premium" className="py-20 md:py-28">
-      <div className="container grid md:grid-cols-2 gap-12 items-center">
+    <section id="premium" className="py-20 md:py-28 bg-white">
+      <div className="container grid md:grid-cols-2 gap-16 items-center">
         <div className="flex justify-center">
-          {premiumImage && (
+          <div className="relative">
+            <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-rose-200/50 to-pink-100/50 blur-xl" />
             <Image
-              src={premiumImage.imageUrl}
-              alt={premiumImage.description}
-              width={600}
-              height={400}
-              className="rounded-lg shadow-lg"
-              data-ai-hint={premiumImage.imageHint}
+              src="/foto/ChatGPT_Image_10_de_jun._de_2026,_11_10_41.png"
+              alt="Exact Calories premium features"
+              width={420}
+              height={560}
+              className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover"
             />
-          )}
+          </div>
         </div>
-        <div className="flex flex-col gap-4">
-          <h2 className="text-3xl md:text-4xl font-bold font-headline">
-            Unlock Your Full Potential with Premium
+        <div className="flex flex-col gap-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-50 border border-amber-200 w-fit">
+            <Crown className="h-4 w-4 text-amber-500" />
+            <span className="text-sm font-semibold gold-gradient-text">Premium</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-bold leading-tight" style={{ fontFamily: 'var(--font-playfair)' }}>
+            Unlock Your Full{" "}
+            <span className="pink-gradient-text">Potential</span>
           </h2>
-          <p className="text-muted-foreground">
-            Premium features unlock advanced tools for users who want maximum performance. Gain access to in-depth analytics, extended progress reports, custom alerts, and enhanced calorie tracking options.
+          <p className="text-muted-foreground leading-relaxed">
+            Premium unlocks advanced tools for users who demand maximum performance. Gain access to in-depth analytics, extended progress reports, and elevated calorie tracking.
           </p>
-          <ul className="space-y-2 my-4">
-            <li className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-primary" />
-              <span>In-depth analytics and insights</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-primary" />
-              <span>Extended progress reports</span>
-            </li>
-            <li className="flex items-center gap-2">
-              <CheckCircle className="h-5 w-5 text-primary" />
-              <span>Custom alerts and reminders</span>
-            </li>
+          <ul className="space-y-3">
+            {perks.map((perk) => (
+              <li key={perk} className="flex items-start gap-3">
+                <CheckCircle2 className="h-5 w-5 text-rose-400 mt-0.5 flex-shrink-0" />
+                <span className="text-sm text-foreground/80">{perk}</span>
+              </li>
+            ))}
           </ul>
-          <div className="flex gap-4">
-            <Button asChild size="lg">
-              <Link href="#">Go Premium</Link>
+          <div className="flex flex-col sm:flex-row gap-4 mt-2">
+            <Button
+              asChild
+              size="lg"
+              className="bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 text-white shadow-lg shadow-rose-200 border-0 rounded-full px-8 h-13 font-semibold"
+            >
+              <Link href="https://apps.apple.com/us/app/exact-calories/id6753726987" target="_blank">
+                <Icons.apple className="h-5 w-5 mr-2" />
+                Download & Go Premium
+              </Link>
             </Button>
           </div>
         </div>

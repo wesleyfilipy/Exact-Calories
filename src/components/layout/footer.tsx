@@ -3,31 +3,61 @@ import { Icons } from "@/components/icons";
 
 export default function Footer() {
   return (
-    <footer className="border-t bg-card">
-      <div className="container py-8">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-2">
-            <Icons.logo className="h-6 w-6 text-primary" />
-            <span className="font-bold">Exact Calories</span>
+    <footer className="border-t border-rose-100 bg-gradient-to-b from-white to-rose-50/50">
+      <div className="container py-12">
+        <div className="grid md:grid-cols-3 gap-8 mb-10">
+          <div className="flex flex-col gap-3">
+            <Link href="/" className="flex items-center gap-2">
+              <Icons.logo className="h-6 w-6 text-rose-500" />
+              <span className="font-bold text-lg pink-gradient-text" style={{ fontFamily: 'var(--font-playfair)' }}>
+                Exact Calories
+              </span>
+            </Link>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              Your personalized calorie tracker — beautifully designed to help you reach your health goals.
+            </p>
           </div>
-          <nav className="flex flex-wrap justify-center md:justify-end gap-x-6 gap-y-2 text-sm">
-            <Link href="/terms" className="text-muted-foreground hover:text-foreground transition-colors">
+
+          <div className="flex flex-col gap-3">
+            <h4 className="font-semibold text-sm text-foreground">Download</h4>
+            <a
+              href="https://apps.apple.com/us/app/exact-calories/id6753726987"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-rose-500 transition-colors"
+            >
+              App Store (iOS)
+            </a>
+            <a
+              href="https://play.google.com/store/apps/details?id=com.wesleyf.exactcalories"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-muted-foreground hover:text-rose-500 transition-colors"
+            >
+              Google Play (Android)
+            </a>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <h4 className="font-semibold text-sm text-foreground">Legal &amp; Support</h4>
+            <Link href="/terms" className="text-sm text-muted-foreground hover:text-rose-500 transition-colors">
               Terms of Use
             </Link>
-            <Link href="/privacy" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/privacy" className="text-sm text-muted-foreground hover:text-rose-500 transition-colors">
               Privacy Policy
             </Link>
-            <Link href="/politica-de-privacidade" className="text-muted-foreground hover:text-foreground transition-colors">
+            <Link href="/politica-de-privacidade" className="text-sm text-muted-foreground hover:text-rose-500 transition-colors">
               Política de Privacidade
             </Link>
-            <a href="mailto:contato@exactcalories.com" className="text-muted-foreground hover:text-foreground transition-colors">
+            <a href="mailto:contato@exactcalories.com" className="text-sm text-muted-foreground hover:text-rose-500 transition-colors">
               Support
             </a>
-          </nav>
+          </div>
         </div>
-        <div className="mt-8 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>© {new Date().getFullYear()} Exact Calories. Developed for iOS & Android.</p>
-          <p className="mt-2">Developer Site & Support URL for Exact Calories.</p>
+
+        <div className="pt-8 border-t border-rose-100 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
+          <p>© {new Date().getFullYear()} Exact Calories. Available on iOS & Android.</p>
+          <p>Developer Site & Support URL for Exact Calories.</p>
         </div>
       </div>
     </footer>

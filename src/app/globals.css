@@ -4,52 +4,53 @@
 
 @layer base {
   :root {
-    --background: 0 0% 96%;
-    --foreground: 224 71.4% 4.1%;
+    --background: 330 30% 98%;
+    --foreground: 330 25% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 224 71.4% 4.1%;
+    --card-foreground: 330 25% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 200 60% 83%;
-    --accent-foreground: 224 71.4% 4.1%;
+    --popover-foreground: 330 25% 12%;
+    --primary: 335 78% 57%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 330 40% 95%;
+    --secondary-foreground: 335 50% 30%;
+    --muted: 330 25% 94%;
+    --muted-foreground: 330 15% 50%;
+    --accent: 330 60% 92%;
+    --accent-foreground: 335 60% 35%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217.2 91.2% 59.8%;
-    --radius: 0.8rem;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 330 30% 88%;
+    --input: 330 30% 88%;
+    --ring: 335 78% 57%;
+    --radius: 1rem;
+    --chart-1: 335 78% 57%;
+    --chart-2: 350 65% 70%;
+    --chart-3: 320 50% 60%;
+    --chart-4: 10 80% 70%;
+    --chart-5: 330 60% 80%;
+    --gold: 38 80% 55%;
   }
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 210 20% 98%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215.4 16.3% 56.9%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --background: 335 25% 8%;
+    --foreground: 330 20% 95%;
+    --card: 335 25% 10%;
+    --card-foreground: 330 20% 95%;
+    --popover: 335 25% 10%;
+    --popover-foreground: 330 20% 95%;
+    --primary: 335 78% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 335 20% 18%;
+    --secondary-foreground: 330 20% 90%;
+    --muted: 335 20% 18%;
+    --muted-foreground: 330 15% 60%;
+    --accent: 335 25% 22%;
+    --accent-foreground: 330 20% 90%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 217.2 91.2% 59.8%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 335 20% 20%;
+    --input: 335 20% 20%;
+    --ring: 335 78% 62%;
   }
 }
 
@@ -65,4 +66,52 @@
   html {
     @apply scroll-smooth;
   }
+}
+
+/* Luxury gradients */
+.luxury-gradient {
+  background: linear-gradient(135deg, hsl(330, 60%, 97%) 0%, hsl(350, 80%, 96%) 50%, hsl(315, 50%, 96%) 100%);
+}
+
+.hero-gradient {
+  background: linear-gradient(160deg, hsl(335, 85%, 96%) 0%, hsl(350, 70%, 98%) 40%, hsl(0, 0%, 100%) 100%);
+}
+
+.pink-gradient-text {
+  background: linear-gradient(135deg, hsl(335, 78%, 52%) 0%, hsl(350, 85%, 65%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, hsl(38, 80%, 45%) 0%, hsl(45, 90%, 60%) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.luxury-card {
+  background: white;
+  border: 1px solid hsl(330, 40%, 90%);
+  box-shadow: 0 4px 24px -4px hsl(335, 60%, 90%), 0 1px 4px hsl(335, 50%, 92%);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.luxury-card:hover {
+  box-shadow: 0 12px 40px -8px hsl(335, 60%, 82%), 0 4px 12px hsl(335, 50%, 88%);
+  transform: translateY(-2px);
+}
+
+.section-divider {
+  background: linear-gradient(90deg, transparent, hsl(335, 70%, 85%), transparent);
+  height: 1px;
+  width: 100%;
+}
+
+/* Wistia phone frame */
+.phone-frame {
+  border-radius: 2.5rem;
+  box-shadow: 0 0 0 8px hsl(335, 40%, 85%), 0 0 0 12px hsl(335, 50%, 90%), 0 24px 64px -12px hsl(335, 70%, 70%);
+  overflow: hidden;
 }

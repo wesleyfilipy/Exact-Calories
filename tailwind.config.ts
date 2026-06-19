@@ -59,7 +59,8 @@ const config: Config = {
       },
       fontFamily: {
         body: ["var(--font-pt-sans)", "sans-serif"],
-        headline: ["var(--font-pt-sans)", "sans-serif"],
+        headline: ["var(--font-playfair)", "serif"],
+        playfair: ["var(--font-playfair)", "serif"],
       },
       keyframes: {
         "accordion-down": {
