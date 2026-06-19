@@ -57,7 +57,10 @@ export default function Footer() {
 
         <div className="pt-8 border-t border-rose-100 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-muted-foreground">
           <p>© {new Date().getFullYear()} Exact Calories. Available on iOS & Android.</p>
-          <p>Developer Site & Support URL for Exact Calories.</p>
+          <div className="flex items-center gap-4">
+            <p>Developer Site & Support URL for Exact Calories.</p>
+            <a href="/admin" className="text-rose-300 hover:text-rose-500 transition-colors font-medium">⚙️ Admin</a>
+          </div>
         </div>
       </div>
     </footer>
