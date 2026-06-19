@@ -67,9 +67,10 @@ export default function SupplementsSection() {
           {supplements.map((supplement) => (
             <Card key={supplement.id} className="luxury-card group relative overflow-hidden flex flex-col rounded-2xl">
               <a href={supplement.link} target="_blank" rel="noopener noreferrer" className="block h-full flex flex-col">
-                <div className="relative w-full h-40 sm:h-48">
+                <div className="relative w-full h-40 sm:h-48 overflow-hidden">
                   {supplement.imageUrl ? (
-                    <Image src={supplement.imageUrl} alt={supplement.name} fill style={{ objectFit: 'cover' }} unoptimized={supplement.imageUrl.startsWith('data:')} />
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={supplement.imageUrl} alt={supplement.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
                     <div className="w-full h-full bg-rose-50 flex items-center justify-center">
                       <ImagePlus className="h-12 w-12 text-rose-200" />

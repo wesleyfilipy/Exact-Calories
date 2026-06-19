@@ -6,6 +6,23 @@ import { defaultConfig, SiteConfig } from "@/lib/site-config";
 const STORAGE_KEY = "exactcalories_admin_config";
 const SUPP_KEY = "exactcalories_supplements";
 
+function compressImage(file: File, maxWidth = 800): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      const scale = Math.min(1, maxWidth / img.width);
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      canvas.getContext("2d")!.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      resolve(canvas.toDataURL("image/jpeg", 0.75));
+    };
+    img.src = url;
+  });
+}
+
 function checkPassword(input: string): boolean {
   const a = ["9", "5", "6", "1", "4", "2", "2", "7"];
   return input.trim() === a.join("");
@@ -48,16 +65,14 @@ export default function AdminPage() {
     setSupplements(list => list.map(s => s.id === id ? { ...s, [field]: value } : s));
   }
 
-  function uploadSuppImage(id: string, file: File) {
-    const r = new FileReader();
-    r.onload = e => updateSupp(id, "imageUrl", e.target?.result as string);
-    r.readAsDataURL(file);
+  async function uploadSuppImage(id: string, file: File) {
+    const compressed = await compressImage(file);
+    updateSupp(id, "imageUrl", compressed);
   }
 
-  function uploadSectionImage(field: keyof SiteConfig, file: File) {
-    const r = new FileReader();
-    r.onload = e => setConfig(c => ({ ...c, [field]: e.target?.result as string }));
-    r.readAsDataURL(file);
+  async function uploadSectionImage(field: keyof SiteConfig, file: File) {
+    const compressed = await compressImage(file);
+    setConfig(c => ({ ...c, [field]: compressed }));
   }
 
   function addSupp() {
