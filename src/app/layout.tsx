@@ -33,8 +33,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-        <Script src="https://fast.wistia.com/player.js" strategy="afterInteractive" />
-        <Script src="https://fast.wistia.com/embed/e0md5zus5a.js" strategy="afterInteractive" type="module" />
+        <Script src="https://fast.wistia.com/assets/external/E-v1.js" strategy="afterInteractive" async />
         {/* Meta Pixel */}
         <Script id="fb-pixel" strategy="afterInteractive" dangerouslySetInnerHTML={{ __html: `
           !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
@@ -46,12 +45,7 @@ export default function RootLayout({
           fbq('track','PageView');
         `}} />
         <style dangerouslySetInnerHTML={{ __html: `
-          wistia-player[media-id='e0md5zus5a']:not(:defined) {
-            background: center / contain no-repeat url('https://fast.wistia.com/embed/medias/e0md5zus5a/swatch');
-            display: block;
-            filter: blur(5px);
-            padding-top: 177.78%;
-          }
+          .wistia_embed { aspect-ratio: 9/16; width: 100%; }
         `}} />
       </head>
       <body className={cn("min-h-screen bg-background font-body", ptSans.variable, playfair.variable)}>

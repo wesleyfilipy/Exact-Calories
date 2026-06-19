@@ -1,15 +1,21 @@
 "use client";
 
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Icons } from "@/components/icons";
 import { Sparkles, Volume2, VolumeX } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect } from "react";
+
+declare global {
+  interface Window {
+    _wq: any[];
+    fbq: (...args: any[]) => void;
+  }
+}
 
 function trackDownload(store: "ios" | "android") {
   try {
-    if (typeof window !== "undefined" && (window as any).fbq) {
-      (window as any).fbq("track", "Lead", {
+    if (typeof window !== "undefined" && window.fbq) {
+      window.fbq("track", "Lead", {
         content_name: store === "ios" ? "AppStore Download" : "GooglePlay Download",
         content_category: "App Download",
       });
@@ -24,13 +30,30 @@ function trackDownload(store: "ios" | "android") {
 
 export default function HeroSection() {
   const [muted, setMuted] = useState(true);
-  const playerRef = useRef<HTMLElement | null>(null);
+  const [wistiaPlayer, setWistiaPlayer] = useState<any>(null);
 
   useEffect(() => {
-    const el = playerRef.current;
-    if (!el) return;
-    (el as any).muted = muted;
-  }, [muted]);
+    window._wq = window._wq || [];
+    window._wq.push({
+      id: "e0md5zus5a",
+      onReady: (video: any) => {
+        setWistiaPlayer(video);
+        video.mute();
+        video.play();
+      },
+    });
+  }, []);
+
+  const toggleSound = () => {
+    if (!wistiaPlayer) return;
+    if (muted) {
+      wistiaPlayer.unmute();
+      wistiaPlayer.volume(1);
+    } else {
+      wistiaPlayer.mute();
+    }
+    setMuted((m) => !m);
+  };
 
   return (
     <section id="home" className="relative overflow-hidden hero-gradient">
@@ -94,40 +117,25 @@ export default function HeroSection() {
         <div className="flex justify-center md:justify-end order-1 md:order-2">
           <div className="relative w-[160px] sm:w-[190px] md:w-[210px]">
             <div className="phone-frame">
-              {/* @ts-ignore */}
-              <wistia-player
-                ref={playerRef}
-                media-id="e0md5zus5a"
-                aspect="0.5625"
-                autoplay="true"
-                muted="true"
-                loop="true"
-                playbar="false"
-                volume-control="false"
-                fullscreen-button="false"
-                playback-rate-control="false"
-                settings-control="false"
-                small-play-button="false"
-                end-video-behavior="loop"
-                sharing="false"
-                download-button="false"
-                plugin-share="false"
+              <div
+                className="wistia_embed wistia_async_e0md5zus5a videoFoam=true autoPlay=true endVideoBehavior=loop playbar=false volumeControl=false fullscreenButton=false playbackRateControl=false settingsControl=false smallPlayButton=false"
+                style={{ height: "100%", position: "relative", width: "100%" }}
               />
             </div>
             {/* Sound toggle */}
             <button
-              onClick={() => setMuted((m) => !m)}
-              className="absolute -bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-white border border-rose-200 rounded-full px-3 py-1.5 text-xs font-medium text-rose-500 shadow-md hover:bg-rose-50 transition-colors"
+              onClick={toggleSound}
+              className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1.5 bg-white border border-rose-200 rounded-full px-3 py-1.5 text-xs font-medium text-rose-500 shadow-md hover:bg-rose-50 transition-colors whitespace-nowrap"
               aria-label={muted ? "Ativar som" : "Silenciar"}
             >
               {muted ? <VolumeX className="h-3.5 w-3.5" /> : <Volume2 className="h-3.5 w-3.5" />}
-              {muted ? "Som" : "Mudo"}
+              {muted ? "Ativar Som" : "Silenciar"}
             </button>
           </div>
         </div>
       </div>
 
-      <div className="section-divider mt-8" />
+      <div className="section-divider mt-10" />
     </section>
   );
 }
