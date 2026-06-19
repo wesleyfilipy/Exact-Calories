@@ -65,7 +65,7 @@ export default function HeroSection() {
 
         {/* Video side — Wistia in phone frame */}
         <div className="flex justify-center md:justify-end">
-          <div className="relative w-[280px] md:w-[320px]">
+          <div className="relative w-[200px] md:w-[220px]">
             <div className="phone-frame">
               {/* @ts-ignore */}
               <wistia-player
@@ -81,10 +81,11 @@ export default function HeroSection() {
                 settings-control="false"
                 small-play-button="false"
                 end-video-behavior="loop"
+                sharing="false"
+                download-button="false"
+                plugin-share="false"
               />
             </div>
-            {/* Decorative ring */}
-            <div className="absolute -inset-4 rounded-[3rem] border-2 border-rose-200/50 pointer-events-none" />
           </div>
         </div>
       </div>

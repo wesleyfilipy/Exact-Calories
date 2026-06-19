@@ -109,6 +109,16 @@
   width: 100%;
 }
 
+/* Hide Wistia download and share buttons */
+.w-ui-container .w-download-button,
+.w-ui-container .w-share-button,
+.wistia_click_to_play .w-bottom-bar,
+wistia-player::part(bottom-bar),
+wistia-player::part(share-button),
+wistia-player::part(download-button) {
+  display: none !important;
+}
+
 /* Wistia phone frame */
 .phone-frame {
   border-radius: 2.5rem;
