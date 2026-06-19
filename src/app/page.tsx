@@ -5,7 +5,6 @@ import FeaturesSection from "@/components/sections/features";
 import AboutSection from "@/components/sections/about";
 import HowItWorksSection from "@/components/sections/how-it-works";
 import PremiumSection from "@/components/sections/premium";
-import SupplementsSection from "@/components/sections/supplements";
 export default function Home() {
   return (
     <div className="flex min-h-screen flex-col">
@@ -15,7 +14,6 @@ export default function Home() {
         <AboutSection />
         <FeaturesSection />
         <HowItWorksSection />
-        <SupplementsSection />
         <PremiumSection />
       </main>
       <Footer />
