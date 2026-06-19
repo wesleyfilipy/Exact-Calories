@@ -9,7 +9,7 @@ const steps = [
 export default function HowItWorksSection() {
   return (
     <section id="how-it-works" className="py-20 md:py-28 luxury-gradient">
-      <div className="container grid md:grid-cols-2 gap-16 items-center">
+      <div className="container grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         <div className="flex flex-col gap-8">
           <div>
             <span className="text-sm font-semibold uppercase tracking-widest text-rose-400">
@@ -38,14 +38,14 @@ export default function HowItWorksSection() {
           </div>
         </div>
         <div className="flex justify-center">
-          <div className="relative">
+          <div className="relative w-full max-w-[340px] md:max-w-[420px]">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-pink-200/50 to-rose-100/50 blur-xl" />
             <Image
               src="/foto/Gemini_Generated_Image_m2486sm2486sm248.png"
               alt="App nutrition tracking screen"
               width={420}
               height={560}
-              className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover"
+              className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover w-full h-auto"
             />
           </div>
         </div>

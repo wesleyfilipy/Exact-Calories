@@ -3,16 +3,16 @@ import Image from "next/image";
 export default function AboutSection() {
   return (
     <section id="about" className="py-20 md:py-28 luxury-gradient">
-      <div className="container grid md:grid-cols-2 gap-16 items-center">
+      <div className="container grid md:grid-cols-2 gap-10 md:gap-16 items-center">
         <div className="flex justify-center">
-          <div className="relative">
+          <div className="relative w-full max-w-[340px] md:max-w-[420px]">
             <div className="absolute -inset-4 rounded-3xl bg-gradient-to-br from-rose-200/60 to-pink-100/60 blur-xl" />
             <Image
               src="/foto/Gemini_Generated_Image_3yh3d63yh3d63yh3.png"
               alt="Exact Calories app mockup"
               width={420}
               height={560}
-              className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover"
+              className="relative rounded-3xl shadow-2xl shadow-rose-200/60 object-cover w-full h-auto"
             />
           </div>
         </div>
