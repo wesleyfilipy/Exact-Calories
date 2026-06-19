@@ -189,16 +189,54 @@ export default function AdminPage() {
         <div className="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 flex flex-col gap-5">
           <div className="flex items-center gap-2"><div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center"><Plus className="h-4 w-4 text-rose-500" /></div><h2 className="font-bold">Suplementos</h2></div>
 
-          {/* Existing supplements */}
-          <div className="flex flex-col gap-3">
-            {supplements.map(s => (
-              <div key={s.id} className="flex items-center gap-3 p-3 rounded-xl border border-rose-100 bg-rose-50/30">
-                {s.imageUrl && <img src={s.imageUrl} alt={s.name} className="w-12 h-12 rounded-lg object-cover flex-shrink-0" />}
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">{s.name}</p>
-                  <p className="text-xs text-muted-foreground truncate">{s.link}</p>
+          {/* Existing supplements — editable inline */}
+          <div className="flex flex-col gap-4">
+            {supplements.map((s, i) => (
+              <div key={s.id} className="flex flex-col gap-2 p-4 rounded-xl border border-rose-100 bg-rose-50/30">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs font-semibold text-rose-400 uppercase tracking-wide">Produto {i + 1}</span>
+                  <button onClick={() => deleteSupplement(s.id)} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors">
+                    <Trash2 className="h-3.5 w-3.5" /> Apagar
+                  </button>
                 </div>
-                <button onClick={() => deleteSupplement(s.id)} className="flex-shrink-0 p-1.5 rounded-lg text-red-400 hover:bg-red-50 transition-colors"><Trash2 className="h-4 w-4" /></button>
+                {/* Image preview + upload */}
+                <div className="flex gap-3 items-start">
+                  {s.imageUrl && (
+                    <img src={s.imageUrl} alt={s.name} className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-rose-100" />
+                  )}
+                  <div className="flex-1 flex flex-col gap-2">
+                    <input
+                      value={s.imageUrl?.startsWith("data:") ? "" : (s.imageUrl ?? "")}
+                      onChange={e => setSupplements(list => list.map(x => x.id === s.id ? { ...x, imageUrl: e.target.value } : x))}
+                      className="border border-rose-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-rose-300 w-full"
+                      placeholder="URL da foto"
+                    />
+                    <label className="inline-flex items-center gap-1.5 text-xs text-rose-500 border border-rose-200 rounded-lg px-2.5 py-1.5 hover:bg-rose-50 cursor-pointer w-fit">
+                      <ImageIcon className="h-3 w-3" /> Trocar foto
+                      <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) { const r = new FileReader(); r.onload = ev => setSupplements(list => list.map(x => x.id === s.id ? { ...x, imageUrl: ev.target?.result as string } : x)); r.readAsDataURL(f); }}} />
+                    </label>
+                  </div>
+                </div>
+                {/* Name */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-foreground/70">Nome do produto</label>
+                  <input
+                    value={s.name}
+                    onChange={e => setSupplements(list => list.map(x => x.id === s.id ? { ...x, name: e.target.value } : x))}
+                    className="border border-rose-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 font-medium"
+                    placeholder="Nome do produto"
+                  />
+                </div>
+                {/* Link */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-foreground/70">Link (onde o visitante é redirecionado ao clicar)</label>
+                  <input
+                    value={s.link}
+                    onChange={e => setSupplements(list => list.map(x => x.id === s.id ? { ...x, link: e.target.value } : x))}
+                    className="border border-rose-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+                    placeholder="https://amazon.com/produto..."
+                  />
+                </div>
               </div>
             ))}
           </div>
