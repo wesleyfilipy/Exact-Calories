@@ -29,9 +29,8 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (sessionStorage.getItem("admin_auth") === "ok") setAuthed(true);
-    fetch("/api/config").then(r => r.json()).then(setConfig).catch(() => {
-      try { const s = localStorage.getItem(STORAGE_KEY); if (s) setConfig(JSON.parse(s)); } catch {}
-    });
+    // Always prefer localStorage (user's saved data) over API defaults
+    try { const s = localStorage.getItem(STORAGE_KEY); if (s) setConfig(JSON.parse(s)); } catch {}
     try { const s = localStorage.getItem(SUPP_KEY); if (s) { const p = JSON.parse(s); if (Array.isArray(p)) setSupplements(p); } } catch {}
   }, []);
 
@@ -69,11 +68,11 @@ export default function AdminPage() {
     if (confirm("Apagar este produto?")) setSupplements(s => s.filter(x => x.id !== id));
   }
 
-  async function save() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-    localStorage.setItem(SUPP_KEY, JSON.stringify(supplements));
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(config)); } catch {}
+    try { localStorage.setItem(SUPP_KEY, JSON.stringify(supplements)); } catch {}
     window.dispatchEvent(new Event("supplements-updated"));
-    try { await fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...config, password: pwd }) }); } catch {}
+    fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...config, password: pwd }) }).catch(() => {});
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   }
