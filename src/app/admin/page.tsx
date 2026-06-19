@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { defaultConfig, SiteConfig } from "@/lib/site-config";
-import { Lock, Save, Image as ImageIcon, Link as LinkIcon, CheckCircle, LogOut, AlertCircle, Plus, Trash2 } from "lucide-react";
 
 const STORAGE_KEY = "exactcalories_admin_config";
 const SUPP_KEY = "exactcalories_supplements";
@@ -22,249 +21,185 @@ const defaultSupplements: Supplement[] = [
 
 export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
-  const [password, setPassword] = useState("");
-  const [authError, setAuthError] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [pwdError, setPwdError] = useState(false);
   const [config, setConfig] = useState<SiteConfig>(defaultConfig);
   const [supplements, setSupplements] = useState<Supplement[]>(defaultSupplements);
-  const [newSupp, setNewSupp] = useState({ name: "", link: "", imageUrl: "" });
-  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
-  const [uploading, setUploading] = useState<string | null>(null);
-
-  const fileRefs = {
-    aboutImage: useRef<HTMLInputElement>(null),
-    howItWorksImage: useRef<HTMLInputElement>(null),
-    premiumImage: useRef<HTMLInputElement>(null),
-    newSuppImage: useRef<HTMLInputElement>(null),
-  };
+  const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    const session = sessionStorage.getItem("admin_auth");
-    if (session === "ok") setAuthed(true);
+    if (sessionStorage.getItem("admin_auth") === "ok") setAuthed(true);
     fetch("/api/config").then(r => r.json()).then(setConfig).catch(() => {
-      const s = localStorage.getItem(STORAGE_KEY);
-      if (s) try { setConfig(JSON.parse(s)); } catch {}
+      try { const s = localStorage.getItem(STORAGE_KEY); if (s) setConfig(JSON.parse(s)); } catch {}
     });
-    const s = localStorage.getItem(SUPP_KEY);
-    if (s) try { const p = JSON.parse(s); if (Array.isArray(p)) setSupplements(p); } catch {}
+    try { const s = localStorage.getItem(SUPP_KEY); if (s) { const p = JSON.parse(s); if (Array.isArray(p)) setSupplements(p); } } catch {}
   }, []);
 
   function login() {
-    if (checkPassword(password)) {
+    if (checkPassword(pwd)) {
       sessionStorage.setItem("admin_auth", "ok");
       setAuthed(true);
-      setAuthError("");
     } else {
-      setAuthError("Senha incorreta");
+      setPwdError(true);
+      setTimeout(() => setPwdError(false), 2000);
     }
   }
 
-  function logout() {
-    sessionStorage.removeItem("admin_auth");
-    setAuthed(false);
-    setPassword("");
+  function updateSupp(id: string, field: keyof Supplement, value: string) {
+    setSupplements(list => list.map(s => s.id === id ? { ...s, [field]: value } : s));
+  }
+
+  function uploadSuppImage(id: string, file: File) {
+    const r = new FileReader();
+    r.onload = e => updateSupp(id, "imageUrl", e.target?.result as string);
+    r.readAsDataURL(file);
+  }
+
+  function uploadSectionImage(field: keyof SiteConfig, file: File) {
+    const r = new FileReader();
+    r.onload = e => setConfig(c => ({ ...c, [field]: e.target?.result as string }));
+    r.readAsDataURL(file);
+  }
+
+  function addSupp() {
+    setSupplements(s => [...s, { id: `supp-${Date.now()}`, name: "Novo Produto", link: "https://", imageUrl: null }]);
+  }
+
+  function deleteSupp(id: string) {
+    if (confirm("Apagar este produto?")) setSupplements(s => s.filter(x => x.id !== id));
   }
 
   async function save() {
-    setSaveState("saving");
     localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
     localStorage.setItem(SUPP_KEY, JSON.stringify(supplements));
     window.dispatchEvent(new Event("supplements-updated"));
-    try {
-      await fetch("/api/config", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...config, password }),
-      });
-    } catch {}
-    setSaveState("saved");
-    setTimeout(() => setSaveState("idle"), 3000);
+    try { await fetch("/api/config", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...config, password: pwd }) }); } catch {}
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
   }
 
-  function handleFileUpload(field: string, file: File) {
-    setUploading(field);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const url = e.target?.result as string;
-      if (field === "newSuppImage") {
-        setNewSupp(n => ({ ...n, imageUrl: url }));
-      } else {
-        setConfig(c => ({ ...c, [field]: url }));
-      }
-      setUploading(null);
-    };
-    reader.readAsDataURL(file);
-  }
-
-  function addSupplement() {
-    if (!newSupp.name || !newSupp.link) return;
-    const item: Supplement = { id: `supp-${Date.now()}`, name: newSupp.name, link: newSupp.link, imageUrl: newSupp.imageUrl || null };
-    setSupplements(s => [...s, item]);
-    setNewSupp({ name: "", link: "", imageUrl: "" });
-  }
-
-  function deleteSupplement(id: string) {
-    setSupplements(s => s.filter(x => x.id !== id));
-  }
-
-  const imageFields: { key: keyof SiteConfig; label: string }[] = [
-    { key: "aboutImage", label: "Foto — Seção Sobre o App" },
-    { key: "howItWorksImage", label: "Foto — Como Funciona" },
-    { key: "premiumImage", label: "Foto — Premium" },
-  ];
-
+  /* ── LOGIN SCREEN ── */
   if (!authed) {
     return (
-      <div className="min-h-screen flex items-center justify-center hero-gradient px-4">
-        <div className="bg-white rounded-3xl shadow-2xl shadow-rose-100 p-8 w-full max-w-sm">
-          <div className="flex flex-col items-center gap-4 mb-8">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center shadow-lg shadow-rose-200">
-              <Lock className="h-7 w-7 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold pink-gradient-text" style={{ fontFamily: "var(--font-playfair)" }}>Admin Access</h1>
-            <p className="text-sm text-muted-foreground text-center">Digite a senha para acessar o painel</p>
+      <div style={{ minHeight: "100vh", background: "linear-gradient(135deg,#fff0f3,#fff)", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+        <div style={{ background: "#fff", borderRadius: "1.5rem", boxShadow: "0 8px 40px #f4335520", padding: "2.5rem 2rem", width: "100%", maxWidth: "360px", textAlign: "center" }}>
+          <div style={{ width: 56, height: 56, borderRadius: "1rem", background: "linear-gradient(135deg,#f43f5e,#ec4899)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem" }}>
+            <span style={{ fontSize: 28 }}>🔐</span>
           </div>
-          <div className="flex flex-col gap-4">
-            <input
-              type="password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && login()}
-              placeholder="Senha"
-              autoComplete="current-password"
-              className="w-full border border-rose-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
-            />
-            {authError && <div className="flex items-center gap-2 text-sm text-red-500"><AlertCircle className="h-4 w-4" />{authError}</div>}
-            <button onClick={login} className="w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-xl py-3 font-semibold hover:from-rose-600 hover:to-pink-600 transition-all shadow-md shadow-rose-200">
-              Entrar
-            </button>
-          </div>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#e11d48", marginBottom: ".5rem" }}>Admin Access</h1>
+          <p style={{ color: "#9ca3af", fontSize: ".9rem", marginBottom: "1.5rem" }}>Digite a senha para entrar</p>
+          <input
+            type="password"
+            value={pwd}
+            onChange={e => setPwd(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && login()}
+            placeholder="Senha"
+            autoFocus
+            style={{ width: "100%", border: `2px solid ${pwdError ? "#f87171" : "#fecdd3"}`, borderRadius: "1rem", padding: ".75rem 1rem", fontSize: "1.1rem", outline: "none", marginBottom: ".75rem", textAlign: "center", letterSpacing: "0.2em", boxSizing: "border-box" }}
+          />
+          {pwdError && <p style={{ color: "#ef4444", fontSize: ".85rem", marginBottom: ".5rem" }}>❌ Senha incorreta</p>}
+          <button onClick={login} style={{ width: "100%", background: "linear-gradient(135deg,#f43f5e,#ec4899)", color: "#fff", border: "none", borderRadius: "1rem", padding: "1rem", fontSize: "1rem", fontWeight: 700, cursor: "pointer" }}>
+            Entrar →
+          </button>
         </div>
       </div>
     );
   }
 
+  /* ── ADMIN PANEL ── */
+  const cardStyle: React.CSSProperties = { background: "#fff", borderRadius: "1.25rem", border: "1px solid #fce7f3", padding: "1.25rem", marginBottom: "1rem" };
+  const labelStyle: React.CSSProperties = { display: "block", fontSize: ".8rem", fontWeight: 700, color: "#be185d", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: ".4rem" };
+  const inputStyle: React.CSSProperties = { width: "100%", border: "1.5px solid #fecdd3", borderRadius: ".75rem", padding: ".65rem .9rem", fontSize: ".95rem", outline: "none", boxSizing: "border-box", marginBottom: ".5rem" };
+  const btnStyle: React.CSSProperties = { background: "linear-gradient(135deg,#f43f5e,#ec4899)", color: "#fff", border: "none", borderRadius: ".75rem", padding: ".6rem 1.2rem", fontSize: ".9rem", fontWeight: 700, cursor: "pointer" };
+
   return (
-    <div className="min-h-screen luxury-gradient">
-      <div className="bg-white border-b border-rose-100 sticky top-0 z-10 shadow-sm">
-        <div className="container flex items-center justify-between h-16">
-          <h1 className="font-bold pink-gradient-text" style={{ fontFamily: "var(--font-playfair)" }}>Painel Admin — Exact Calories</h1>
-          <button onClick={logout} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-rose-500">
-            <LogOut className="h-4 w-4" /><span className="hidden sm:inline">Sair</span>
-          </button>
-        </div>
+    <div style={{ minHeight: "100vh", background: "#fff8fa", paddingBottom: "2rem" }}>
+
+      {/* Header */}
+      <div style={{ background: "#fff", borderBottom: "1px solid #fce7f3", padding: "1rem", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 10 }}>
+        <span style={{ fontWeight: 800, color: "#e11d48", fontSize: "1.1rem" }}>⚙️ Admin Panel</span>
+        <button onClick={() => { sessionStorage.removeItem("admin_auth"); setAuthed(false); }} style={{ background: "none", border: "1px solid #fecdd3", borderRadius: ".6rem", padding: ".4rem .8rem", color: "#e11d48", cursor: "pointer", fontSize: ".85rem" }}>
+          Sair
+        </button>
       </div>
 
-      <div className="container py-8 max-w-2xl flex flex-col gap-6 px-4">
+      <div style={{ maxWidth: 600, margin: "0 auto", padding: "1rem" }}>
 
-        {/* Download Links */}
-        <div className="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 flex flex-col gap-5">
-          <div className="flex items-center gap-2"><div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center"><LinkIcon className="h-4 w-4 text-rose-500" /></div><h2 className="font-bold">Links de Download</h2></div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">🍎 App Store (iPhone)</label>
-            <input value={config.iosUrl} onChange={e => setConfig(c => ({ ...c, iosUrl: e.target.value }))} className="border border-rose-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 w-full" placeholder="https://apps.apple.com/..." />
-          </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">🤖 Google Play (Android)</label>
-            <input value={config.androidUrl} onChange={e => setConfig(c => ({ ...c, androidUrl: e.target.value }))} className="border border-rose-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 w-full" placeholder="https://play.google.com/..." />
-          </div>
+        {/* ── SECTION 1: Download Links ── */}
+        <div style={cardStyle}>
+          <h2 style={{ fontWeight: 800, fontSize: "1.1rem", marginBottom: "1rem", color: "#111" }}>📲 Links de Download</h2>
+
+          <label style={labelStyle}>🍎 App Store — link do iPhone</label>
+          <input style={inputStyle} value={config.iosUrl} onChange={e => setConfig(c => ({ ...c, iosUrl: e.target.value }))} placeholder="https://apps.apple.com/..." />
+
+          <label style={labelStyle}>🤖 Google Play — link do Android</label>
+          <input style={inputStyle} value={config.androidUrl} onChange={e => setConfig(c => ({ ...c, androidUrl: e.target.value }))} placeholder="https://play.google.com/..." />
         </div>
 
-        {/* Site Photos */}
-        <div className="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 flex flex-col gap-6">
-          <div className="flex items-center gap-2"><div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center"><ImageIcon className="h-4 w-4 text-rose-500" /></div><h2 className="font-bold">Fotos do Site</h2></div>
-          {imageFields.map(({ key, label }) => (
-            <div key={key} className="flex flex-col gap-3 pb-5 border-b border-rose-50 last:border-0 last:pb-0">
-              <label className="text-sm font-medium">{label}</label>
-              {config[key] && <div className="w-full h-40 rounded-xl overflow-hidden border border-rose-100"><img src={config[key]} alt={label} className="w-full h-full object-cover" /></div>}
-              <input value={(config[key] as string).startsWith("data:") ? "" : (config[key] as string)} onChange={e => setConfig(c => ({ ...c, [key]: e.target.value }))} className="border border-rose-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" placeholder="Cole a URL da imagem..." />
-              <input ref={fileRefs[key as keyof typeof fileRefs]} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload(key, f); }} />
-              <button onClick={() => fileRefs[key as keyof typeof fileRefs].current?.click()} disabled={uploading === key} className="inline-flex items-center gap-2 text-xs text-rose-500 border border-rose-200 rounded-lg px-3 py-2 hover:bg-rose-50 transition-colors disabled:opacity-50 font-medium w-fit">
-                <ImageIcon className="h-3.5 w-3.5" />{uploading === key ? "Carregando..." : "📱 Escolher do dispositivo"}
-              </button>
+        {/* ── SECTION 2: Supplements ── */}
+        <div style={cardStyle}>
+          <h2 style={{ fontWeight: 800, fontSize: "1.1rem", marginBottom: "1rem", color: "#111" }}>💊 Suplementos</h2>
+          <p style={{ color: "#9ca3af", fontSize: ".85rem", marginBottom: "1rem" }}>Edite o nome, link e foto de cada produto abaixo.</p>
+
+          {supplements.map((s, i) => (
+            <div key={s.id} style={{ border: "1.5px solid #fce7f3", borderRadius: "1rem", padding: "1rem", marginBottom: "1rem", background: "#fffbfc" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: ".75rem" }}>
+                <span style={{ fontWeight: 700, color: "#e11d48", fontSize: ".9rem" }}>Produto {i + 1}</span>
+                <button onClick={() => deleteSupp(s.id)} style={{ background: "#fee2e2", border: "none", borderRadius: ".5rem", padding: ".3rem .7rem", color: "#ef4444", cursor: "pointer", fontSize: ".8rem", fontWeight: 600 }}>
+                  🗑 Apagar
+                </button>
+              </div>
+
+              {/* Image */}
+              {s.imageUrl && (
+                <img src={s.imageUrl} alt={s.name} style={{ width: "100%", height: 140, objectFit: "cover", borderRadius: ".75rem", marginBottom: ".5rem" }} />
+              )}
+              <label style={labelStyle}>🖼 Foto do produto</label>
+              <input style={inputStyle} value={s.imageUrl?.startsWith("data:") ? "" : (s.imageUrl ?? "")} onChange={e => updateSupp(s.id, "imageUrl", e.target.value)} placeholder="Cole a URL da foto..." />
+              <label style={{ ...btnStyle, display: "inline-block", marginBottom: ".75rem", fontSize: ".8rem", cursor: "pointer" }}>
+                📱 Fazer upload da foto
+                <input type="file" accept="image/*" style={{ display: "none" }} onChange={e => { const f = e.target.files?.[0]; if (f) uploadSuppImage(s.id, f); }} />
+              </label>
+
+              {/* Name */}
+              <label style={labelStyle}>📝 Nome do produto</label>
+              <input style={inputStyle} value={s.name} onChange={e => updateSupp(s.id, "name", e.target.value)} placeholder="Ex: Whey Protein" />
+
+              {/* Link */}
+              <label style={labelStyle}>🔗 Link — onde o visitante é redirecionado ao clicar</label>
+              <input style={inputStyle} value={s.link} onChange={e => updateSupp(s.id, "link", e.target.value)} placeholder="https://amazon.com/produto..." />
+            </div>
+          ))}
+
+          <button onClick={addSupp} style={{ width: "100%", background: "#fff0f3", border: "2px dashed #fda4af", borderRadius: "1rem", padding: ".9rem", color: "#e11d48", fontWeight: 700, cursor: "pointer", fontSize: ".95rem" }}>
+            + Adicionar novo produto
+          </button>
+        </div>
+
+        {/* ── SECTION 3: Site Photos ── */}
+        <div style={cardStyle}>
+          <h2 style={{ fontWeight: 800, fontSize: "1.1rem", marginBottom: "1rem", color: "#111" }}>🖼 Fotos do Site</h2>
+
+          {([
+            { key: "aboutImage" as keyof SiteConfig, label: "Foto — Seção Sobre" },
+            { key: "howItWorksImage" as keyof SiteConfig, label: "Foto — Como Funciona" },
+            { key: "premiumImage" as keyof SiteConfig, label: "Foto — Premium" },
+          ]).map(({ key, label }) => (
+            <div key={key} style={{ marginBottom: "1.5rem" }}>
+              <label style={labelStyle}>{label}</label>
+              {config[key] && <img src={config[key] as string} alt={label} style={{ width: "100%", height: 140, objectFit: "cover", borderRadius: ".75rem", marginBottom: ".5rem" }} />}
+              <input style={inputStyle} value={(config[key] as string).startsWith("data:") ? "" : (config[key] as string)} onChange={e => setConfig(c => ({ ...c, [key]: e.target.value }))} placeholder="Cole a URL da foto..." />
+              <label style={{ ...btnStyle, display: "inline-block", fontSize: ".8rem", cursor: "pointer" }}>
+                📱 Fazer upload da foto
+                <input type="file" accept="image/*" style={{ display: "none" }} onChange={e => { const f = e.target.files?.[0]; if (f) uploadSectionImage(key, f); }} />
+              </label>
             </div>
           ))}
         </div>
 
-        {/* Supplements */}
-        <div className="bg-white rounded-2xl border border-rose-100 shadow-sm p-6 flex flex-col gap-5">
-          <div className="flex items-center gap-2"><div className="w-8 h-8 rounded-lg bg-rose-50 flex items-center justify-center"><Plus className="h-4 w-4 text-rose-500" /></div><h2 className="font-bold">Suplementos</h2></div>
-
-          {/* Existing supplements — editable inline */}
-          <div className="flex flex-col gap-4">
-            {supplements.map((s, i) => (
-              <div key={s.id} className="flex flex-col gap-2 p-4 rounded-xl border border-rose-100 bg-rose-50/30">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs font-semibold text-rose-400 uppercase tracking-wide">Produto {i + 1}</span>
-                  <button onClick={() => deleteSupplement(s.id)} className="flex items-center gap-1 text-xs text-red-400 hover:text-red-600 transition-colors">
-                    <Trash2 className="h-3.5 w-3.5" /> Apagar
-                  </button>
-                </div>
-                {/* Image preview + upload */}
-                <div className="flex gap-3 items-start">
-                  {s.imageUrl && (
-                    <img src={s.imageUrl} alt={s.name} className="w-16 h-16 rounded-xl object-cover flex-shrink-0 border border-rose-100" />
-                  )}
-                  <div className="flex-1 flex flex-col gap-2">
-                    <input
-                      value={s.imageUrl?.startsWith("data:") ? "" : (s.imageUrl ?? "")}
-                      onChange={e => setSupplements(list => list.map(x => x.id === s.id ? { ...x, imageUrl: e.target.value } : x))}
-                      className="border border-rose-200 rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-rose-300 w-full"
-                      placeholder="URL da foto"
-                    />
-                    <label className="inline-flex items-center gap-1.5 text-xs text-rose-500 border border-rose-200 rounded-lg px-2.5 py-1.5 hover:bg-rose-50 cursor-pointer w-fit">
-                      <ImageIcon className="h-3 w-3" /> Trocar foto
-                      <input type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) { const r = new FileReader(); r.onload = ev => setSupplements(list => list.map(x => x.id === s.id ? { ...x, imageUrl: ev.target?.result as string } : x)); r.readAsDataURL(f); }}} />
-                    </label>
-                  </div>
-                </div>
-                {/* Name */}
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-foreground/70">Nome do produto</label>
-                  <input
-                    value={s.name}
-                    onChange={e => setSupplements(list => list.map(x => x.id === s.id ? { ...x, name: e.target.value } : x))}
-                    className="border border-rose-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300 font-medium"
-                    placeholder="Nome do produto"
-                  />
-                </div>
-                {/* Link */}
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-foreground/70">Link (onde o visitante é redirecionado ao clicar)</label>
-                  <input
-                    value={s.link}
-                    onChange={e => setSupplements(list => list.map(x => x.id === s.id ? { ...x, link: e.target.value } : x))}
-                    className="border border-rose-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
-                    placeholder="https://amazon.com/produto..."
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Add new supplement */}
-          <div className="border border-dashed border-rose-200 rounded-xl p-4 flex flex-col gap-3">
-            <p className="text-sm font-medium text-rose-500">+ Adicionar Suplemento</p>
-            <input value={newSupp.name} onChange={e => setNewSupp(n => ({ ...n, name: e.target.value }))} className="border border-rose-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" placeholder="Nome do produto" />
-            <input value={newSupp.link} onChange={e => setNewSupp(n => ({ ...n, link: e.target.value }))} className="border border-rose-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" placeholder="Link do produto (ex: Amazon)" />
-            <input value={newSupp.imageUrl.startsWith("data:") ? "" : newSupp.imageUrl} onChange={e => setNewSupp(n => ({ ...n, imageUrl: e.target.value }))} className="border border-rose-200 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300" placeholder="URL da imagem" />
-            <div className="flex gap-2">
-              <input ref={fileRefs.newSuppImage} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleFileUpload("newSuppImage", f); }} />
-              <button onClick={() => fileRefs.newSuppImage.current?.click()} className="inline-flex items-center gap-2 text-xs text-rose-500 border border-rose-200 rounded-lg px-3 py-2 hover:bg-rose-50 font-medium">
-                <ImageIcon className="h-3.5 w-3.5" />Foto do dispositivo
-              </button>
-              <button onClick={addSupplement} disabled={!newSupp.name || !newSupp.link} className="flex-1 bg-rose-100 text-rose-600 rounded-lg py-2 text-sm font-semibold hover:bg-rose-200 transition-colors disabled:opacity-40">
-                Adicionar
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Save */}
-        <button onClick={save} disabled={saveState === "saving"} className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-rose-500 to-pink-500 hover:from-rose-600 hover:to-pink-600 disabled:opacity-70 text-white rounded-2xl py-4 font-bold text-base shadow-lg shadow-rose-200 transition-all">
-          {saveState === "saving" && <><span className="animate-spin inline-block">⏳</span> Salvando...</>}
-          {saveState === "saved" && <><CheckCircle className="h-5 w-5" /> Salvo com sucesso!</>}
-          {saveState === "error" && <><AlertCircle className="h-5 w-5" /> Erro — tente novamente</>}
-          {saveState === "idle" && <><Save className="h-5 w-5" /> Salvar Alterações</>}
+        {/* ── SAVE BUTTON ── */}
+        <button onClick={save} style={{ width: "100%", background: saved ? "linear-gradient(135deg,#22c55e,#16a34a)" : "linear-gradient(135deg,#f43f5e,#ec4899)", color: "#fff", border: "none", borderRadius: "1.25rem", padding: "1.1rem", fontSize: "1.1rem", fontWeight: 800, cursor: "pointer", boxShadow: "0 8px 24px #f4335530" }}>
+          {saved ? "✅ Salvo com sucesso!" : "💾 SALVAR TODAS AS ALTERAÇÕES"}
         </button>
       </div>
     </div>
