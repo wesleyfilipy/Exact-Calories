@@ -5,13 +5,15 @@ import { defaultConfig, SiteConfig } from "@/lib/site-config";
 import { Lock, Save, Image as ImageIcon, Link as LinkIcon, CheckCircle, LogOut, AlertCircle } from "lucide-react";
 
 const STORAGE_KEY = "exactcalories_admin_config";
-const PWD_HASH = "8a43035a27c3a50e3dd7951d2b42c2045ec230a405fb1e66b84323f879bcc310";
+// encoded access key for admin panel
+const _k = "OTU2MTQyMjc=";
 
-async function checkPassword(input: string): Promise<boolean> {
-  const encoded = new TextEncoder().encode(input);
-  const buffer = await crypto.subtle.digest("SHA-256", encoded);
-  const hash = Array.from(new Uint8Array(buffer)).map(b => b.toString(16).padStart(2, "0")).join("");
-  return hash === PWD_HASH;
+function checkPassword(input: string): boolean {
+  try {
+    return btoa(input.trim()) === _k;
+  } catch {
+    return false;
+  }
 }
 
 export default function AdminPage() {
@@ -42,7 +44,7 @@ export default function AdminPage() {
   }, []);
 
   async function login() {
-    const ok = await checkPassword(password);
+    const ok = checkPassword(password);
     if (ok) {
       sessionStorage.setItem("admin_auth", "ok");
       setAuthed(true);
