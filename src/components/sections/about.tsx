@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useSiteConfig } from "@/hooks/use-site-config";
 
 export default function AboutSection() {
-  const cfg = useSiteConfig();
+  const { config: cfg } = useSiteConfig();
 
   return (
     <section id="about" className="py-20 md:py-28 luxury-gradient">

@@ -10,7 +10,7 @@ const steps = [
 ];
 
 export default function HowItWorksSection() {
-  const cfg = useSiteConfig();
+  const { config: cfg } = useSiteConfig();
 
   return (
     <section id="how-it-works" className="py-20 md:py-28 luxury-gradient">

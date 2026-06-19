@@ -30,7 +30,7 @@ function trackDownload(store: "ios" | "android") {
 }
 
 export default function HeroSection() {
-  const cfg = useSiteConfig();
+  const { config: cfg } = useSiteConfig();
   const [muted, setMuted] = useState(true);
   const [wistiaPlayer, setWistiaPlayer] = useState<any>(null);
 

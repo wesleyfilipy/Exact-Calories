@@ -15,7 +15,7 @@ const perks = [
 ];
 
 export default function PremiumSection() {
-  const cfg = useSiteConfig();
+  const { config: cfg } = useSiteConfig();
 
   return (
     <section id="premium" className="py-20 md:py-28 bg-white">
